@@ -236,21 +236,30 @@ dropTetrimino elapsed model =
         let
             score =
                 List.length (Grid.mapToList (\_ _ _ -> True) model.active)
-        in
-        { model
-            | grid = Grid.stamp x (floor y) model.active model.grid
-            , score =
-                model.score
-                    + score
-                    * (if model.acceleration then
-                        2
 
-                       else
-                        1
-                      )
-        }
-            |> Model.spawnTetrimino
-            |> clearLines
+            isShape =
+                Grid.size model.active
+                    /= ( 1, 1 )
+        in
+        if isShape then
+            { model
+                | grid = Grid.stamp x (floor y) model.active model.grid
+                , score =
+                    model.score
+                        + score
+                        * (if model.acceleration then
+                            2
+
+                           else
+                            1
+                          )
+            }
+                |> Model.spawnTetrimino
+                |> clearLines
+
+        else
+            { model | grid = Grid.explodeBomb x (floor y) model.grid }
+                |> Model.spawnTetrimino
 
     else
         { model | position = ( x, y_ ) }

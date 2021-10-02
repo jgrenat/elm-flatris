@@ -7,12 +7,11 @@ module Model exposing
     , spawnTetrimino
     )
 
-import Color exposing (Color)
 import Grid exposing (Grid)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Random
-import Tetriminos
+import Tetriminos as Tetriminos exposing (Tetrimino)
 
 
 type State
@@ -53,11 +52,11 @@ type alias AnimationState =
 
 type alias Model =
     { size : ( Float, Float )
-    , active : Grid Color
+    , active : Grid Tetrimino
     , position : ( Int, Float )
-    , grid : Grid Color
+    , grid : Grid Tetrimino
     , lines : Int
-    , next : Grid Color
+    , next : Grid Tetrimino
     , score : Int
     , seed : Random.Seed
     , state : State
@@ -128,12 +127,12 @@ decode =
                 , state = state
             }
         )
-        (Decode.field "active" (Grid.decode Color.decode))
+        (Decode.field "active" (Grid.decode Tetriminos.decode))
         (Decode.field "positionX" Decode.int)
         (Decode.field "positionY" Decode.float)
-        (Decode.field "grid" (Grid.decode Color.decode))
+        (Decode.field "grid" (Grid.decode Tetriminos.decode))
         (Decode.field "lines" Decode.int)
-        (Decode.field "next" (Grid.decode Color.decode))
+        (Decode.field "next" (Grid.decode Tetriminos.decode))
         (Decode.field "score" Decode.int)
         (Decode.field "state" (Decode.map decodeState Decode.string))
 
@@ -143,12 +142,12 @@ encode indent model =
     Encode.encode
         indent
         (Encode.object
-            [ ( "active", Grid.encode Color.encode model.active )
+            [ ( "active", Grid.encode Tetriminos.encode model.active )
             , ( "positionX", Encode.int (Tuple.first model.position) )
             , ( "positionY", Encode.float (Tuple.second model.position) )
-            , ( "grid", Grid.encode Color.encode model.grid )
+            , ( "grid", Grid.encode Tetriminos.encode model.grid )
             , ( "lines", Encode.int model.lines )
-            , ( "next", Grid.encode Color.encode model.next )
+            , ( "next", Grid.encode Tetriminos.encode model.next )
             , ( "score", Encode.int model.score )
             , ( "state", Encode.string (encodeState model.state) )
             ]

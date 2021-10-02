@@ -11,6 +11,7 @@ import Messages exposing (Msg(..))
 import Model exposing (Model)
 import Svg
 import Svg.Attributes as SvgAttrs
+import Tetriminos exposing (Tetrimino(..))
 
 
 onTouchStart : Msg -> Html.Attribute Msg
@@ -23,13 +24,13 @@ onTouchEnd msg =
     on "touchend" (Json.succeed msg)
 
 
-renderBox : (Color -> Color) -> Color -> ( Int, Int ) -> Html Msg
+renderBox : (Tetrimino -> Tetrimino) -> Tetrimino -> ( Int, Int ) -> Html Msg
 renderBox fun c ( x, y ) =
     Svg.rect
         [ SvgAttrs.width (String.fromInt 30)
         , SvgAttrs.height (String.fromInt 30)
-        , SvgAttrs.fill (Color.toString (fun c))
-        , SvgAttrs.stroke (Color.toString (fun c))
+        , SvgAttrs.fill (Tetriminos.toColorString (fun c))
+        , SvgAttrs.stroke (Tetriminos.toColorString (fun c))
         , SvgAttrs.strokeWidth "0.5"
         , SvgAttrs.x (String.fromInt (x * 30))
         , SvgAttrs.y (String.fromInt (y * 30))
@@ -37,7 +38,7 @@ renderBox fun c ( x, y ) =
         []
 
 
-renderNext : Grid Color -> Html Msg
+renderNext : Grid Tetrimino -> Html Msg
 renderNext grid =
     let
         ( width, height ) =
@@ -45,7 +46,7 @@ renderNext grid =
     in
     grid
         |> Grid.mapToList
-            (renderBox (always (Color.rgb 236 240 241)))
+            (renderBox (always (Shape (Color.rgb 236 240 241))))
         |> Svg.svg
             [ SvgAttrs.width (String.fromInt (width * 30))
             , SvgAttrs.height (String.fromInt (height * 30))

@@ -1,4 +1,4 @@
-module Grid exposing (Grid, clearLines, collide, decode, empty, encode, fromList, initPosition, mapToList, rotate, size, stamp)
+module Grid exposing (Grid, clearLines, collide, decode, empty, encode, explodeBomb, filter, fromList, initPosition, mapToList, rotate, size, stamp)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode exposing (Value)
@@ -22,6 +22,11 @@ fromList value =
 mapToList : (a -> ( Int, Int ) -> b) -> Grid a -> List b
 mapToList fun =
     List.map (\{ val, pos } -> fun val pos)
+
+
+filter : (Cell a -> Bool) -> Grid a -> Grid a
+filter predicate =
+    List.filter predicate
 
 
 empty : Grid a
@@ -68,6 +73,20 @@ stamp x y sample grid =
                     { cell | pos = newPos }
             in
             stamp x y rest ({ cell | pos = newPos } :: List.filter (\{ pos } -> pos /= newPos) grid)
+
+
+
+-- Explodes a bomb
+
+
+explodeBomb : Int -> Int -> Grid a -> Grid a
+explodeBomb x y grid =
+    let
+        cellsToRemove =
+            [ ( -1, -1 ), ( -1, 0 ), ( -1, 1 ), ( 0, -1 ), ( 0, 0 ), ( 0, 1 ), ( 1, -1 ), ( 1, 0 ), ( 1, 1 ) ]
+                |> List.map (\( x_, y_ ) -> ( x_ + x, y_ + y ))
+    in
+    filter (\cell -> List.member cell.pos cellsToRemove |> not) grid
 
 
 
