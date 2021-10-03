@@ -1,4 +1,15 @@
 # Elm Flatris
+
+## Fork by jgrenat
+
+This game was forked during a video to add a new functionality: adding a new type of block – the bomb – that makes surronding blocks explode.
+
+You can see the video there: https://www.youtube.com/watch?v=fXoFiW_nIgw
+
+A playable version is available there: https://jgrenat.github.io/elm-flatris/
+
+## Original README 
+
 A [Flatris](https://github.com/skidding/flatris) clone in Elm.
 
 [![Screenshot](elm-flatris.png)](https://unsoundscapes.itch.io/flatris)
